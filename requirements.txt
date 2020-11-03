@@ -1,0 +1,8 @@
+certifi==2020.6.20
+chardet==3.0.4
+clcert-chachagen==1.0
+idna==2.10
+numpy==1.19.4
+pycryptodome==3.9.9
+requests==2.24.0
+urllib3==1.25.11
