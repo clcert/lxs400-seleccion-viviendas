@@ -4,6 +4,14 @@ import io
 import json
 import clcert_chachagen
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser(description='Los 400 - Selección aleatoria de Manzanas Censales.')
+parser.add_argument('-v', dest='viviendas', action="store", required=True, type=int,
+                    help="Número de viviendas a seleccionar. (Obligatorio)")
+parser.add_argument('-f', dest='date', action="store", default="", type=str,
+                    help="Fecha (formato Epoch con milisegundos) del pulso que será utilizado como semilla aleatoria. (Por defecto último pulso generado)")
+args = parser.parse_args()
 
 ## 1° Obtener datos (manzanas censales) desde INE y construir listas para su posterior uso
 
@@ -29,7 +37,10 @@ for viviendas in total_viviendas:
 
 ## 2° Obtener semilla aleatoria desde Random UChile
 
-pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/last"
+if args.date == "":
+    pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/last"
+else:
+    pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/time/" + args.date
 seed = json.loads(requests.get(pulse_url).content)["pulse"]["outputValue"]
 
 ## 3° Crear objeto PRNG con la semilla obtenida en el paso anterior
@@ -40,7 +51,7 @@ chacha_prng = clcert_chachagen.ChaChaGen(seed)
 
 fids_seleccionados = []
 fids_seleccionados_agrupados = {}
-for i in range(30000):
+for i in range(args.viviendas):
     rnd = chacha_prng.randint(0, 5510076)  # TOTAL VIVIENDAS = 5.510.076
     x = np.searchsorted(viviendas_acumuladas, rnd)
     if x in fids_seleccionados_agrupados:

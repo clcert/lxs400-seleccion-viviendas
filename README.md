@@ -12,7 +12,7 @@ El primer paso para la selección de ciudadanas y ciudadanos de manera aleatoria
 
 ### Paso 2: Selección de viviendas (índices) en cada Manzana (`seleccion_viviendas.py`) 
 
-1. Se extrae desde el Faro de Aleatoriedad el pulso correspondiente a la fecha previamente establecida para la ceremonia de selección de viviendas. Este pulso se combinará con un valor aleatorio secreto previamente definido para formar la semilla aleatoria que se utilizará para alimentar a un PRNG (generador pseudo-aleatorio).
+1. Se extrae desde el Faro de Aleatoriedad el pulso correspondiente a la fecha previamente establecida para la ceremonia de selección de viviendas. Este pulso se combinará (usando algoritmo HMAC) con un valor aleatorio secreto previamente definido para derivar la semilla aleatoria que se utilizará para alimentar a un PRNG (generador pseudo-aleatorio).
 
 2. Por cada manzana censal seleccionada en el Paso 1 se escogerán de manera aleatoria tantos índices como veces fue seleccioanda dicha manzana en el rango [1, N], siendo N = total de viviendas en dicha manzana.
 
@@ -27,8 +27,12 @@ $ pip install -r requirements.txt
 ### 2, Ejecutar selección de manzanas
 
 ```
-$ python seleccion_manzanas.py
+$ python seleccion_manzanas.py -f [FECHA_PULSO] -v [NUM_VIVIENDAS]
 ```
+Argumentos:
+- `-f [FECHA_PULSO]`: fecha del pulso aleatorio que se utilizará, en formato Epoch Unix con milisegundos. Visitar https://www.epochconverter.com/ para convertir una fecha en dicho formato.
+- `-v [NUM_VIVIENDAS]`: número de viviendas a seleccionar de manera aleatoria.
+
 Se generan dos archivos:
 1. `resultados_manzanas_detalle.csv`: detalle de todas las distintas manzanas escogidas (identificador único, veces que fue seleccionada y ubicación geográfica hasta el nivel de distrito).
 2. `resultados_fids.csv`: lista de los 30.000 identificadores de las manzanas seleccionadas.
@@ -36,7 +40,11 @@ Se generan dos archivos:
 ### 3. Ejecutar selección de viviendas
 
 ```
-$ python seleccion_viviendas.py
+$ python seleccion_viviendas.py -s [SECRETO] -f [FECHA_PULSO]
 ```
+Argumentos:
+- `-s [SECRETO]`: valor aleatorio secreto en formato hexadecimal.
+- `-f [FECHA_PULSO]`: fecha del pulso aleatorio que se utilizará, en formato Epoch Unix con milisegundos. Visitar https://www.epochconverter.com/ para convertir una fecha en dicho formato.
+
 Se genera un archivo:
 1. `resultados_indices_viviendas.csv`: lista de índices de viviendas escogidas por cada manzana censal seleccionada.

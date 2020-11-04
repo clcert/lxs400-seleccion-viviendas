@@ -3,14 +3,28 @@ import clcert_chachagen
 import json
 import requests
 import io
+import argparse
+import hmac
+import hashlib
+
+parser = argparse.ArgumentParser(description='Los 400 - Selección aleatoria de Índices de Viviendas.')
+parser.add_argument('-s', dest='secret', action="store", default="", type=str,
+                    help="Valor aleatorio (en hexadecimal) secreto que será combinado con el pulso aleatorio público. (Por defecto sín secreto)")
+parser.add_argument('-f', dest='date', action="store", default="", type=str,
+                    help="Fecha (formato Epoch con milisegundos) del pulso aleatorio público que será utilizado. (Por defecto último pulso generado)")
+args = parser.parse_args()
 
 ## 1° Obtener semilla aleatoria desde Random UChile
 
-pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/last"
-seed = json.loads(requests.get(pulse_url).content)["pulse"]["outputValue"]
+if args.date == "":
+    pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/last"
+else:
+    pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/time/" + args.date
 
-## 2° Crear objeto PRNG con la semilla obtenida en el paso anterior
+## 2° Construir semilla aleatorio combinando secreto y pulso (HMAC), y crear PRNG con dicha semilla aleatoria
 
+pulse_value = json.loads(requests.get(pulse_url).content)["pulse"]["outputValue"]
+seed = hmac.HMAC(bytes.fromhex(args.secret), bytes.fromhex(pulse_value), hashlib.sha3_512).hexdigest()
 chacha_prng = clcert_chachagen.ChaChaGen(seed)
 
 ## 3° Revisar cuantas veces fue seleccionada cada manzana y escoger índices de viviendas a escoger
@@ -34,4 +48,4 @@ with open(output_filename, 'w') as out_file:
     writer = csv.DictWriter(out_file, fieldnames=out_columns)
     writer.writeheader()
     for vivienda in viviendas_seleccionadas:
-        writer.writerow({'MANZENT': vivienda['MANZENT'], 'INDEX_VIVIENDAS': vivienda['INDEX_VIVIENDAS']})
+        writer.writerow({'MANZENT': vivienda['MANZENT'], 'INDEX_VIVIENDAS': sorted(vivienda['INDEX_VIVIENDAS'])})
