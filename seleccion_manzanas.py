@@ -30,6 +30,7 @@ print('[Los 400] Selección Aleatoria de Manzanas Censales')
 ## 1° Obtener datos (manzanas censales) desde INE y construir listas para su posterior uso
 
 print('(1/5) Descargando base de datos desde sitio del INE... ', end='', flush=True)
+
 data_ine_url = "https://opendata.arcgis.com/datasets/54e0c40680054efaabeb9d53b09e1e7a_0.csv?outSR=%7B%22latestWkid%22" \
                "%3A3857%2C%22wkid%22%3A102100%7D"
 response = requests.get(data_ine_url).content.decode('utf-8')
@@ -43,28 +44,32 @@ for row in reader:
                             'COMUNA': row['COMUNA'],
                             'NOMBRE_DISTRITO': row['NOMBRE_DISTRITO'],
                             'MANZENT': row['MANZENT']})
-
 viviendas_acum_value = 0
 viviendas_acumuladas = []
 for viviendas in total_viviendas:
     viviendas_acum_value += int(viviendas)
     viviendas_acumuladas.append(viviendas_acum_value)
+
 print(esc('32') + 'ok' u'\u2713' + esc(0))
 
 ## 2° Obtener semilla aleatoria desde Random UChile
 
 print('(2/5) Obteniendo pulso aleatorio desde Random UChile... ', end='', flush=True)
+
 if args.date == "":
     pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/last"
 else:
     pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/time/" + args.date
 seed = json.loads(requests.get(pulse_url).content)["pulse"]["outputValue"]
+
 print(esc('32') + 'ok' u'\u2713' + esc(0))
 
 ## 3° Crear objeto PRNG con la semilla obtenida en el paso anterior
 
 print('(3/5) Construyendo PRNG con la semilla obtenida... ', end='', flush=True)
+
 chacha_prng = clcert_chachagen.ChaChaGen(seed)
+
 print(esc('32') + 'ok' u'\u2713' + esc(0))
 
 ## 4° Seleccionar aleatoriamente las 30.000 manzanas (ponderadas por total de viviendas)
@@ -85,6 +90,7 @@ for i in progressbar.progressbar(range(args.viviendas), widgets=widgets,
             continue
     else:
         fids_seleccionados_agrupados[x] = 1
+
 sys.stdout.write("\033[F")
 sys.stdout.write("\033[K")
 print('(4/5) Seleccionando las manzanas al azar... ' + esc('32') + 'ok' u'\u2713' + esc(0))
