@@ -89,6 +89,7 @@ for i in progressbar.progressbar(range(args.viviendas), widgets=widgets,
             i -= 1
             continue
     else:
+        fids_seleccionados.append(x)
         fids_seleccionados_agrupados[x] = 1
 
 sys.stdout.write("\033[F")

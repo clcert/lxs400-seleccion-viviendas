@@ -24,13 +24,13 @@ El primer paso para la selección de ciudadanas y ciudadanos de manera aleatoria
 $ pip install -r requirements.txt
 ```
 
-### 2, Ejecutar selección de manzanas
+### 2. Ejecutar selección de manzanas
 
 ```
 $ python seleccion_manzanas.py -f [FECHA_PULSO] -v [NUM_VIVIENDAS]
 ```
 Argumentos:
-- `-f [FECHA_PULSO]`: fecha del pulso aleatorio que se utilizará, en formato Epoch Unix con milisegundos. Visitar https://www.epochconverter.com/ para convertir una fecha en dicho formato.
+- `-f [FECHA_PULSO]`: fecha (hora UTC) del pulso aleatorio que se utilizará, en formato Epoch Unix con milisegundos. Visitar https://www.epochconverter.com/ para convertir una fecha en dicho formato.
 - `-v [NUM_VIVIENDAS]`: número de viviendas a seleccionar de manera aleatoria.
 
 Se generan dos archivos:

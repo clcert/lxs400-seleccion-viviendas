@@ -51,11 +51,11 @@ viviendas_seleccionadas = []
 with open(input_filename, 'rt') as input_file:
     reader = csv.DictReader(io.StringIO(input_file.read()))
     for row in reader:
-        times = row['TIMES_SELECTED']
         total = row['TOTAL_VIVIENDAS']
-        selected_indexes = chacha_prng.sample(range(int(total)), int(times))
+        times = row['TIMES_SELECTED']
+        selected_indexes = chacha_prng.sample(range(1, int(total) + 1), int(times))
         viviendas_seleccionadas.append({'MANZENT': row['MANZENT'],
-                                        'INDEX_VIVIENDAS': list(map(lambda x: x + 1, selected_indexes))})
+                                        'INDICES_VIVIENDAS': selected_indexes})
 
 print(esc('32') + 'ok' u'\u2713' + esc(0))
 
@@ -64,10 +64,11 @@ print(esc('32') + 'ok' u'\u2713' + esc(0))
 print('(4/4) Generando archivo con los resultados... ', end='', flush=True)
 
 output_filename = "resultados_indices_viviendas.csv"
-out_columns = ['MANZENT', 'INDEX_VIVIENDAS']
+out_columns = ['MANZENT', 'INDICE_VIVIENDA']
 with open(output_filename, 'w') as out_file:
     writer = csv.DictWriter(out_file, fieldnames=out_columns)
     writer.writeheader()
     for vivienda in viviendas_seleccionadas:
-        writer.writerow({'MANZENT': vivienda['MANZENT'], 'INDEX_VIVIENDAS': sorted(vivienda['INDEX_VIVIENDAS'])})
+        for index in sorted(vivienda['INDICES_VIVIENDAS']):
+            writer.writerow({'MANZENT': vivienda['MANZENT'], 'INDICE_VIVIENDA': index})
 print(esc('32') + 'ok' u'\u2713' + esc(0))
