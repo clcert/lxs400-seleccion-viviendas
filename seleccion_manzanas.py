@@ -7,10 +7,16 @@ import numpy as np
 import argparse
 import progressbar
 import sys
+import datetime
 
 
 def esc(code):
     return f'\033[{code}m'
+
+
+def format_date(s):
+    date = datetime.datetime.strptime(s, '%Y-%m-%dT%H:%M:%S.000Z')
+    return date.strftime('%d/%m/%Y %H:%M:%S UTC')
 
 
 widgets = [
@@ -25,7 +31,8 @@ parser.add_argument('-f', dest='date', action="store", default="", type=str,
                     help="Fecha (formato Epoch con milisegundos) del pulso que será utilizado como semilla aleatoria. (Por defecto último pulso generado)")
 args = parser.parse_args()
 
-print('[Los 400] Selección Aleatoria de Manzanas Censales')
+print('[Los 400] Selección Aleatoria de Manzanas Censales\n')
+print('🏠 Seleccionando ', args.viviendas, ' manzanas censales 🏠')
 
 ## 1° Obtener datos (manzanas censales) desde INE y construir listas para su posterior uso
 
@@ -60,7 +67,11 @@ if args.date == "":
     pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/last"
 else:
     pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/time/" + args.date
-seed = json.loads(requests.get(pulse_url).content)["pulse"]["outputValue"]
+pulse = json.loads(requests.get(pulse_url).content)["pulse"]
+pulse_date = format_date(pulse["timeStamp"])
+pulse_index = str(pulse["chainIndex"]) + '-' + str(pulse["pulseIndex"])
+pulse_uri = str(pulse["uri"])
+seed = pulse["outputValue"]
 
 print(esc('32') + 'ok' u'\u2713' + esc(0))
 
@@ -127,3 +138,12 @@ with open(out_2_filename, 'w') as out_file:
         writer.writerow({'FID': fid + 1})
 
 print(esc('32') + 'ok' u'\u2713' + esc(0))
+
+print('🏠 ¡Selección realizada con éxito! 🏠')
+
+print('\nResumen de la Selección')
+print('‣ Fecha pulso aleatorio: ' + pulse_date + ' (' + pulse_uri + ')')
+print('‣ Número de manzanas distintas: ' + str(len(fids_seleccionados_agrupados)))
+
+print('\n🎲 Random UChile 🎲')
+print('Entra a https://random.uchile.cl/los400 para mayor información')

@@ -6,10 +6,16 @@ import io
 import argparse
 import hmac
 import hashlib
+import datetime
 
 
 def esc(code):
     return f'\033[{code}m'
+
+
+def format_date(s):
+    date = datetime.datetime.strptime(s, '%Y-%m-%dT%H:%M:%S.000Z')
+    return date.strftime('%d/%m/%Y %H:%M:%S UTC')
 
 
 parser = argparse.ArgumentParser(description='Los 400 - Selección aleatoria de Índices de Viviendas.')
@@ -19,7 +25,9 @@ parser.add_argument('-f', dest='date', action="store", default="", type=str,
                     help="Fecha (formato Epoch con milisegundos) del pulso aleatorio público que será utilizado. (Por defecto último pulso generado)")
 args = parser.parse_args()
 
-print('[Los 400] Selección Aleatoria de Índices de Viviendas')
+print('[Los 400] Selección Aleatoria de Índices de Viviendas\n')
+
+print('🏠 Seleccionando índices de viviendas 🏠')
 
 ## 1° Obtener semilla aleatoria desde Random UChile
 
@@ -36,7 +44,11 @@ print(esc('32') + 'ok' u'\u2713' + esc(0))
 
 print('(2/4) Construyendo semilla aleatoria y PRNG combinando pulso con secreto... ', end='', flush=True)
 
-pulse_value = json.loads(requests.get(pulse_url).content)["pulse"]["outputValue"]
+pulse = json.loads(requests.get(pulse_url).content)["pulse"]
+pulse_date = format_date(pulse["timeStamp"])
+pulse_index = str(pulse["chainIndex"]) + '-' + str(pulse["pulseIndex"])
+pulse_uri = str(pulse["uri"])
+pulse_value = pulse["outputValue"]
 seed = hmac.HMAC(bytes.fromhex(args.secret), bytes.fromhex(pulse_value), hashlib.sha3_512).hexdigest()
 chacha_prng = clcert_chachagen.ChaChaGen(seed)
 
@@ -68,7 +80,18 @@ out_columns = ['MANZENT', 'INDICE_VIVIENDA']
 with open(output_filename, 'w') as out_file:
     writer = csv.DictWriter(out_file, fieldnames=out_columns)
     writer.writeheader()
+    counter = 0
     for vivienda in viviendas_seleccionadas:
         for index in sorted(vivienda['INDICES_VIVIENDAS']):
+            counter += 1
             writer.writerow({'MANZENT': vivienda['MANZENT'], 'INDICE_VIVIENDA': index})
 print(esc('32') + 'ok' u'\u2713' + esc(0))
+
+print('🏠 ¡Selección realizada con éxito! 🏠')
+
+print('\nResumen de la Selección')
+print('‣ Fecha pulso aleatorio: ' + pulse_date + ' (' + pulse_uri + ')')
+print('‣ Número de viviendas seleccionadas: ' + str(counter))
+
+print('\n🎲 Random UChile 🎲')
+print('Entra a https://random.uchile.cl/los400 para mayor información')
