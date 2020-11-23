@@ -24,14 +24,14 @@ widgets = [
     progressbar.Bar(left='[', right='] '), progressbar.Percentage(),
 ]
 
-parser = argparse.ArgumentParser(description='Los 400 - Selección aleatoria de Manzanas Censales.')
+parser = argparse.ArgumentParser(description='Los 500 - Selección aleatoria de Manzanas Censales.')
 parser.add_argument('-v', dest='viviendas', action="store", required=True, type=int,
                     help="Número de viviendas a seleccionar. (Obligatorio)")
 parser.add_argument('-f', dest='date', action="store", default="", type=str,
                     help="Fecha (formato Epoch con milisegundos) del pulso que será utilizado como semilla aleatoria. (Por defecto último pulso generado)")
 args = parser.parse_args()
 
-print('[Los 400] Selección Aleatoria de Manzanas Censales\n')
+print('[Los 500] Selección Aleatoria de Manzanas Censales\n')
 print('🏠 Seleccionando ', args.viviendas, ' manzanas censales 🏠')
 
 ## 1° Obtener datos (manzanas censales) desde INE y construir listas para su posterior uso
@@ -146,4 +146,4 @@ print('‣ Fecha pulso aleatorio: ' + pulse_date + ' (' + pulse_uri + ')')
 print('‣ Número de manzanas distintas: ' + str(len(fids_seleccionados_agrupados)))
 
 print('\n🎲 Random UChile 🎲')
-print('Entra a https://random.uchile.cl/los400 para mayor información')
+print('Entra a https://random.uchile.cl/los500 para mayor información')
