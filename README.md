@@ -1,4 +1,4 @@
-# Los 500 - Selección Aleatoria de Manzanas Censales y Viviendas
+# Los 500 - Selección Aleatoria de Manzanas Censales e Índices de Viviendas
 
 El primer paso para la selección de ciudadanas y ciudadanos de manera aleatoria que participarán en el proyecto "Los 500" es la selección aleatoria de viviendas, las cuales se elegirán a partir de una selección aleatoria de manzanas censales repartidas en todo Chile.
 
