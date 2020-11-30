@@ -8,6 +8,7 @@ import argparse
 import progressbar
 import sys
 import datetime
+import time
 
 
 def esc(code):
@@ -67,7 +68,14 @@ if args.date == "":
     pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/last"
 else:
     pulse_url = "https://random.uchile.cl/beacon/2.0/pulse/time/" + args.date
-pulse = json.loads(requests.get(pulse_url).content)["pulse"]
+
+while True:
+    request = requests.get(pulse_url)
+    if request.status_code == 200:
+        break
+    time.sleep(25)
+
+pulse = json.loads(request.content)["pulse"]
 pulse_date = format_date(pulse["timeStamp"])
 pulse_index = str(pulse["chainIndex"]) + '-' + str(pulse["pulseIndex"])
 pulse_uri = str(pulse["uri"])
