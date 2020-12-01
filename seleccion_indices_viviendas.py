@@ -18,7 +18,7 @@ def format_date(s):
     return date.strftime('%d/%m/%Y %H:%M:%S UTC')
 
 
-parser = argparse.ArgumentParser(description='Los 500 - Selección aleatoria de Índices de Viviendas.')
+parser = argparse.ArgumentParser(description='Lxs 400 - Selección aleatoria de Índices de Viviendas.')
 parser.add_argument('-s', dest='secret', action="store", default="", type=str,
                     help="Valor aleatorio (en hexadecimal) secreto que será combinado con el pulso aleatorio público. (Por defecto sín secreto)")
 parser.add_argument('-f', dest='date', action="store", default="", type=str,
@@ -27,7 +27,7 @@ parser.add_argument('-n', dest='files', action="store", default=1, type=int,
                     help="Número de archivos a generar con los resultados de las viviendas seleccionadas. (Por defecto 1)")
 args = parser.parse_args()
 
-print('[Los 500] Selección Aleatoria de Índices de Viviendas\n')
+print('[Lxs 400] Selección Aleatoria de Índices de Viviendas\n')
 
 print('🏠 Seleccionando índices de viviendas 🏠')
 
@@ -112,4 +112,4 @@ print('‣ Número de viviendas seleccionadas: ' + str(counter))
 print('‣ Número de archivos generados: ' + str(args.files))
 
 print('\n🎲 Random UChile 🎲')
-print('Entra a https://random.uchile.cl/los500 para mayor información')
+print('Entra a https://random.uchile.cl/lxs400 para mayor información')
