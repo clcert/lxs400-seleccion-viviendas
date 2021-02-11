@@ -51,3 +51,7 @@ Argumentos:
 
 Se generan los siguientes archivos (relacionados con el argumento `-n`):
 1. `resultados_indices_viviendas_<X>.csv`: lista de índices de viviendas escogidas por cada manzana censal seleccionada. Se generar `-n` archivos distintos, diferenciándose en el número `<X>` de cada uno.
+
+## Actualización 18/1/2021:
+
+Debido a la necesidad de generar 45.000 índices de viviendas de manera compatible con los 30.000 índices generados originalmente (para más detalles ver <a href="https://random.uchile.cl/lxs400/">aquí</a>), se creó el script `seleccion_indices_viviendas_exp.py`. Este programa es una simple variante/extensión del script `seleccion_indices_viviendas.py` que permite, partiendo del mismo secreto y archivo, re-generar los mismos índices para los 30.000 primeras entradas del archivo indicado como entrada.
